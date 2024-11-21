@@ -1,0 +1,43 @@
+CREATE TABLE customer_state_log (cust_id VARCHAR(10),state INT,timestamp TIME);
+
+INSERT INTO customer_state_log (cust_id, state, timestamp)
+VALUES('c001', 1, '07:00:00'),
+        ('c001', 0, '09:30:00'),
+        ('c001', 1, '12:00:00'),
+        ('c001', 0, '14:30:00'),
+        ('c002', 1, '08:00:00'),
+        ('c002', 0, '09:30:00'),
+        ('c002', 1, '11:00:00'),
+        ('c002', 0, '12:30:00'),
+        ('c002', 1, '15:00:00'),
+        ('c002', 0, '16:30:00'),
+        ('c003', 1, '09:00:00'),
+        ('c003', 0, '10:30:00'),
+        ('c004', 1, '10:00:00'),
+        ('c004', 0, '10:30:00'),
+        ('c004', 1, '14:00:00'),
+        ('c004', 0, '15:30:00'),
+        ('c005', 1, '10:00:00'),
+        ('c005', 0, '14:30:00'),
+        ('c005', 1, '15:30:00'),
+        ('c005', 0, '18:30:00');
+
+--- Given the users' sessions logs on a particular day,
+--- calculate how many hours each user was active that day.
+--- Note: The session starts when state=1 and ends when state=0.
+
+with CTE as(
+    select
+        cust_id,
+        state,
+        timestamp as login_time,
+        lead(timestamp) over(partition by cust_id order by timestamp) as logout_time
+    from
+        customer_state_log)
+
+select
+    cust_id,
+    sum(round((julianday(logout_time) - julianday(login_time)) * 24, 2)) AS working_hours
+from CTE
+where state = 1
+group by cust_id;
