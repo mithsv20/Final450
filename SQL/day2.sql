@@ -16,6 +16,29 @@ VALUES(1, 2, 'comment', 'hello world! this is a TEST.'),
 -- while keeping the rest of the letters lowercase.
 -- Your output should include the original text in one column and the modified text in another column.
 
+-- base query
+with CTE as(
+select
+    content_id,
+    customer_id,
+    content_type,
+    content_text as original_text,
+    unnest(string_to_array(lower(content_text), ' ')) as modified_text
+from
+    user_content)
+
+select content_id,
+  STRING_AGG(concat(
+    UPPER(LEFT(modified_text, 1)),
+    SUBSTRING(modified_text, 2, LENGTH(modified_text))
+  ), ' ') as rest_value
+from CTE
+group by content_id
+order by content_id
+
+
+
+-- optimized query
 select
     content_id,
     customer_id,
