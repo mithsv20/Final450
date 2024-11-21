@@ -37,7 +37,7 @@ with CTE as(
 
 select
     cust_id,
-    sum(round((julianday(logout_time) - julianday(login_time)) * 24, 2)) AS working_hours
+    sum(logout_time - login_time) AS working_hours
 from CTE
 where state = 1
 group by cust_id;
