@@ -27,3 +27,4 @@ for a in arr:
     else:
         new_arr.insert(i, a)
 print(list(new_arr))
+
