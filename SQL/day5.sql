@@ -1,4 +1,3 @@
---Write a query to find which user logged in during january 2024 but did not login in november 2023
 
 CREATE TABLE logins (
     user_id INT,
@@ -14,6 +13,7 @@ VALUES
     (2, '2023-11-30'),
     (5, '2024-01-25');
 
+--Write a query to find which user logged in during january 2024 but did not login in november 2023
 
 SELECT distinct(user_id) FROM logins
 WHERE user_id not in
